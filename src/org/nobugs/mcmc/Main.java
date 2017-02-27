@@ -12,7 +12,7 @@ public class Main {
 
         try (Monitor monitor = new Monitor();
              Coda coda = new Coda(Paths.get("/tmp", "coda.txt"))) {
-            Model model = new Model(randomEngine, coda, monitor);
+            Model model = new Model(randomEngine, coda, monitor, Config.data, 0, 1);
             for (int i = 0; i < Config.jumps; i++) {
                 model.update();
             }
