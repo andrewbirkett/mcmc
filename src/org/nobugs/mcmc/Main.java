@@ -1,12 +1,21 @@
 package org.nobugs.mcmc;
 
-import cern.jet.random.Normal;
 import cern.jet.random.engine.MersenneTwister;
 
+import java.nio.file.Paths;
+
 public class Main {
-    public static void main(String[] args) {
-        MersenneTwister randomEngine = new MersenneTwister();
-        Normal normal = new Normal(0, 1, randomEngine);
-        System.out.println(normal.pdf(0));
+    public static void main(String[] args) throws Exception {
+        int seed = (int) System.currentTimeMillis();
+
+        MersenneTwister randomEngine = new MersenneTwister(seed);
+
+        try (Monitor monitor = new Monitor();
+             Coda coda = new Coda(Paths.get("/tmp", "coda.txt"))) {
+            Model model = new Model(randomEngine, coda, monitor);
+            for (int i = 0; i < Config.jumps; i++) {
+                model.update();
+            }
+        }
     }
 }
