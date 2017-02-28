@@ -43,8 +43,8 @@ public class Model {
 
         if (sigmaProposed < 0) return;
 
-        double currentDensity = density(mu, sigma, data);
-        double proposedDensity = density(muProposed, sigmaProposed, data);
+        double currentDensity = logdensity(mu, sigma, data);
+        double proposedDensity = logdensity(muProposed, sigmaProposed, data);
 
         for (Tracer tracer : tracers) {
             tracer.update(mu, sigma, currentDensity);
@@ -55,7 +55,7 @@ public class Model {
             mu = muProposed;
             sigma = sigmaProposed;
         } else {
-            double ratio = proposedDensity / currentDensity;
+            double ratio = Math.exp(proposedDensity - currentDensity);
             double roll = uniform.nextDouble();
             if (roll < ratio) {
                 monitor.recordStep(ACCEPTED);
@@ -64,10 +64,11 @@ public class Model {
             } else {
                 monitor.recordStep(REJECTED);
             }
+
         }
     }
 
-    private double density(double mu, double sigma, double[] data) {
+    private double logdensity(double mu, double sigma, double[] data) {
         double variance = sigma * sigma;
         double sqrt_inv = 1.0 / Math.sqrt(2.0 * Math.PI * variance);
 
@@ -77,7 +78,6 @@ public class Model {
             sum += -(delta * delta) / (2.0 * variance);
         }
 
-        return Math.pow(sqrt_inv, data.length) * Math.exp(sum);
+        return data.length * Math.log(sqrt_inv) + sum;
     }
-
 }
