@@ -60,12 +60,16 @@ public class Model {
     }
 
     private double density(double mu, double sigma, double[] data) {
-        Normal normal = new Normal(mu, sigma, null);
-        double density = 1.0;
+        double variance = sigma * sigma;
+        double sqrt_inv = 1.0 / Math.sqrt(2.0 * Math.PI * variance);
+
+        double sum = 0;
         for (double d : data) {
-            density *= normal.pdf(d);
+            double delta = d - mu;
+            sum += -(delta * delta) / (2.0 * variance);
         }
-        return density;
+
+        return Math.pow(sqrt_inv, data.length) * Math.exp(sum);
     }
 
 }
