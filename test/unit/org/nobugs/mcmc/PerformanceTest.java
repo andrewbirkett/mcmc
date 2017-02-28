@@ -1,7 +1,7 @@
 package org.nobugs.mcmc;
 
 import cern.jet.random.engine.MersenneTwister;
-import org.apache.commons.lang.time.StopWatch;
+import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Test;
 
 public class PerformanceTest {
@@ -18,7 +18,7 @@ public class PerformanceTest {
             int warmup = 100_000;
             int nsteps = 1_000_000;
 
-            Model model = new Model(randomEngine, monitor, data, 1, 1.5);
+            Model model = new Model(randomEngine, monitor, data, new double[]{1, 1.5});
             for (int i = 0; i < warmup; i++) {
                 model.update();
             }

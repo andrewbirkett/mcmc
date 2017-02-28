@@ -47,7 +47,8 @@ public class ModelTest {
             int burnin = 100_000;
             int nsteps = 100_000;
 
-            Model model = new Model(randomEngine, monitor, data, 5, 3);
+            double[] inits = {5, 3};
+            Model model = new Model(randomEngine, monitor, data, inits);
             for (int i = 0; i < burnin; i++) {
                 model.update();
             }
@@ -58,9 +59,10 @@ public class ModelTest {
                 model.update();
             }
 
-            assertThat(tracer.meanMu(), closeTo(sampleMean, 0.1));
-            assertThat(tracer.meanSigma(), closeTo(sampleSd, 0.1));
-            System.out.println("MeanMu:" + tracer.meanMu() + " meanSigma:" + tracer.meanSigma());
+            double[] means = tracer.means();
+            assertThat(means[0], closeTo(sampleMean, 0.1));
+            assertThat(means[1], closeTo(sampleSd, 0.1));
+            System.out.println("MeanMu:" + means[0] + " meanSigma:" + means[1]);
         }
     }
 

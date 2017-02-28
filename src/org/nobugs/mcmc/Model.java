@@ -14,61 +14,23 @@ import static org.nobugs.mcmc.Monitor.StepOutcome.REJECTED;
 public class Model {
     private final List<Tracer> tracers;
     private final double[] data;
-    private double mu;
-    private double sigma;
     private Normal proposal;
     private Uniform uniform;
     private Monitor monitor;
+    private double[] parameters;
 
-    public Model(RandomEngine randomEngine, Monitor monitor, double[] data, double initMu, double initSigma) throws Exception {
+    public Model(RandomEngine randomEngine, Monitor monitor, double[] data, double[] parameters) throws Exception {
         this.proposal = new Normal(0, 0.01, randomEngine);
         this.uniform = new Uniform(0, 1, randomEngine);
         this.monitor = monitor;
         this.data = data;
         this.tracers = new ArrayList<>();
-        this.mu = initMu;
-        this.sigma = initSigma;
+        this.parameters = parameters;
     }
 
-    public void addTracer(Tracer tracer) {
-        tracers.add(tracer);
-    }
-
-    public void update() throws IOException {
-        double deltaMu = proposal.nextDouble(); // proposal.nextDouble();
-        double deltaSigma = proposal.nextDouble();
-
-        double muProposed = mu + deltaMu;
-        double sigmaProposed = sigma + deltaSigma;
-
-        if (sigmaProposed < 0) return;
-
-        double currentDensity = logdensity(mu, sigma, data);
-        double proposedDensity = logdensity(muProposed, sigmaProposed, data);
-
-        for (Tracer tracer : tracers) {
-            tracer.update(mu, sigma, currentDensity);
-        }
-
-        if (proposedDensity > currentDensity) {
-            monitor.recordStep(ACCEPTED);
-            mu = muProposed;
-            sigma = sigmaProposed;
-        } else {
-            double ratio = Math.exp(proposedDensity - currentDensity);
-            double roll = uniform.nextDouble();
-            if (roll < ratio) {
-                monitor.recordStep(ACCEPTED);
-                mu = muProposed;
-                sigma = sigmaProposed;
-            } else {
-                monitor.recordStep(REJECTED);
-            }
-
-        }
-    }
-
-    private double logdensity(double mu, double sigma, double[] data) {
+    private static double logdensity(double[] parameters, double[] data) {
+        double mu = parameters[0];
+        double sigma = parameters[1];
         double variance = sigma * sigma;
         double sqrt_inv = 1.0 / Math.sqrt(2.0 * Math.PI * variance);
 
@@ -79,5 +41,45 @@ public class Model {
         }
 
         return data.length * Math.log(sqrt_inv) + sum;
+    }
+
+    public void addTracer(Tracer tracer) {
+        tracers.add(tracer);
+    }
+
+    public void update() throws IOException {
+        double[] delta = new double[parameters.length];
+        for (int i = 0; i < parameters.length; i++) {
+            delta[i] = proposal.nextDouble();
+        }
+
+        double[] proposed = new double[parameters.length];
+        for (int i = 0; i < parameters.length; i++) {
+            proposed[i] = parameters[i] + delta[i];
+        }
+
+        if (proposed[1] < 0) return;
+
+        double currentDensity = logdensity(parameters, data);
+        double proposedDensity = logdensity(proposed, data);
+
+        for (Tracer tracer : tracers) {
+            tracer.update(parameters, currentDensity);
+        }
+
+        if (proposedDensity > currentDensity) {
+            monitor.recordStep(ACCEPTED);
+            parameters = proposed;
+        } else {
+            double ratio = Math.exp(proposedDensity - currentDensity);
+            double roll = uniform.nextDouble();
+            if (roll < ratio) {
+                monitor.recordStep(ACCEPTED);
+                parameters = proposed;
+            } else {
+                monitor.recordStep(REJECTED);
+            }
+
+        }
     }
 }

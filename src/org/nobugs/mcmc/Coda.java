@@ -1,6 +1,7 @@
 package org.nobugs.mcmc;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -20,9 +21,9 @@ public class Coda implements Tracer, Closeable {
         outputStream.close();
     }
 
-    public void update(double mu, double sigma, double p) {
+    public void update(double[] parameters, double logProbabilityDensity) {
         try {
-            String string = Double.toString(mu) + "," + Double.toString(sigma) + "," + Double.toString(p) + "\n";
+            String string = StringUtils.join(parameters, ',') + "," + Double.toString(logProbabilityDensity) + "\n";
             IOUtils.write(string, outputStream, CHARSET);
         } catch (IOException e) {
             throw new RuntimeException(e);
