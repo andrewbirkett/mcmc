@@ -14,7 +14,7 @@ public class PerformanceTest {
         MersenneTwister randomEngine = new MersenneTwister();
 
         int datapoints = 100;
-        double[] data = Data.generate(0, 1, datapoints, randomEngine);
+        double[] data = Data.generateNormal(0, 1, datapoints, randomEngine);
 
         try (Monitor monitor = new Monitor()) {
             int warmup = 100_000;

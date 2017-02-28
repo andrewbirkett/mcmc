@@ -15,12 +15,12 @@ import static org.hamcrest.number.IsCloseTo.closeTo;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class ModelTest {
+public class NormalModelTest {
 
     private final double mu;
     private final double sigma;
 
-    public ModelTest(double mu, double sigma) {
+    public NormalModelTest(double mu, double sigma) {
         this.mu = mu;
         this.sigma = sigma;
     }
@@ -38,7 +38,7 @@ public class ModelTest {
         MersenneTwister randomEngine = new MersenneTwister();
 
         int datapoints = 100;
-        double[] data = Data.generate(mu, sigma, datapoints, randomEngine);
+        double[] data = Data.generateNormal(mu, sigma, datapoints, randomEngine);
         SummaryStatistics summaryStatistics = new SummaryStatistics();
         for (double d : data) {
             summaryStatistics.addValue(d);
