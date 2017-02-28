@@ -34,7 +34,6 @@ public class LogNormalModelTest {
 
     @Test
     public void test() throws Exception {
-
         MersenneTwister randomEngine = new MersenneTwister();
 
         int datapoints = 100;

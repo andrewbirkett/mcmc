@@ -6,13 +6,17 @@ public class LogNormalDistribution implements Distribution {
         double logMu = parameters[0];
         double logSigma = parameters[1];
 
-        double probability = 1;
+        double logProbability = 0;
 
+        logProbability += data.length * -Math.log(logSigma * Math.sqrt(2 * Math.PI));
+        double denom = 2 * square(logSigma);
         for (double d : data) {
-            double a = 1 / (d * logSigma * Math.sqrt(2 * Math.PI));
-            double b = Math.exp(-(Math.pow(Math.log(d) - logMu, 2.0) / (2 * logSigma * logSigma)));
-            probability *= (a * b);
+            logProbability -= Math.log(d) + square(Math.log(d) - logMu) / denom;
         }
-        return Math.log(probability);
+        return logProbability;
+    }
+
+    private double square(double d) {
+        return d * d;
     }
 }
