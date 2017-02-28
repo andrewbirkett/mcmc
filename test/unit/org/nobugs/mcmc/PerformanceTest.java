@@ -18,8 +18,7 @@ public class PerformanceTest {
             int warmup = 100_000;
             int nsteps = 1_000_000;
 
-            Model model = new Model(randomEngine, (mu, sigma, p) -> {
-            }, monitor, data, 1, 1.5);
+            Model model = new Model(randomEngine, monitor, data, 1, 1.5);
             for (int i = 0; i < warmup; i++) {
                 model.update();
             }

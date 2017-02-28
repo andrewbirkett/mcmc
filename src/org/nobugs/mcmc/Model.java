@@ -5,12 +5,14 @@ import cern.jet.random.Uniform;
 import cern.jet.random.engine.RandomEngine;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.nobugs.mcmc.Monitor.StepOutcome.ACCEPTED;
 import static org.nobugs.mcmc.Monitor.StepOutcome.REJECTED;
 
 public class Model {
-    private final Tracer tracer;
+    private final List<Tracer> tracers;
     private final double[] data;
     private double mu;
     private double sigma;
@@ -18,14 +20,18 @@ public class Model {
     private Uniform uniform;
     private Monitor monitor;
 
-    public Model(RandomEngine randomEngine, Tracer tracer, Monitor monitor, double[] data, double initMu, double initSigma) throws Exception {
+    public Model(RandomEngine randomEngine, Monitor monitor, double[] data, double initMu, double initSigma) throws Exception {
         this.proposal = new Normal(0, 0.01, randomEngine);
         this.uniform = new Uniform(0, 1, randomEngine);
         this.monitor = monitor;
-        this.tracer = tracer;
         this.data = data;
+        this.tracers = new ArrayList<>();
         this.mu = initMu;
         this.sigma = initSigma;
+    }
+
+    public void addTracer(Tracer tracer) {
+        tracers.add(tracer);
     }
 
     public void update() throws IOException {
@@ -40,7 +46,9 @@ public class Model {
         double currentDensity = density(mu, sigma, data);
         double proposedDensity = density(muProposed, sigmaProposed, data);
 
-        tracer.update(mu, sigma, currentDensity);
+        for (Tracer tracer : tracers) {
+            tracer.update(mu, sigma, currentDensity);
+        }
 
         if (proposedDensity > currentDensity) {
             monitor.recordStep(ACCEPTED);
