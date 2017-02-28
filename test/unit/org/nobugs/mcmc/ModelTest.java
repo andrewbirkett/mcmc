@@ -5,6 +5,8 @@ import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.nobugs.mcmc.distribution.Distribution;
+import org.nobugs.mcmc.distribution.NormalDistribution;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -48,7 +50,8 @@ public class ModelTest {
             int nsteps = 100_000;
 
             double[] inits = {5, 3};
-            Model model = new Model(randomEngine, monitor, data, inits);
+            Distribution likelihood = new NormalDistribution();
+            Model model = new Model(randomEngine, monitor, data, inits, likelihood);
             for (int i = 0; i < burnin; i++) {
                 model.update();
             }

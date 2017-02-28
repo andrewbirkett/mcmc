@@ -3,6 +3,8 @@ package org.nobugs.mcmc;
 import cern.jet.random.engine.MersenneTwister;
 import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Test;
+import org.nobugs.mcmc.distribution.Distribution;
+import org.nobugs.mcmc.distribution.NormalDistribution;
 
 public class PerformanceTest {
 
@@ -18,7 +20,8 @@ public class PerformanceTest {
             int warmup = 100_000;
             int nsteps = 1_000_000;
 
-            Model model = new Model(randomEngine, monitor, data, new double[]{1, 1.5});
+            Distribution likelihood = new NormalDistribution();
+            Model model = new Model(randomEngine, monitor, data, new double[]{1, 1.5}, likelihood);
             for (int i = 0; i < warmup; i++) {
                 model.update();
             }
