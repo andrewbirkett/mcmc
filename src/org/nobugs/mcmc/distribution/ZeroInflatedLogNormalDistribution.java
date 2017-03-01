@@ -16,13 +16,11 @@ public class ZeroInflatedLogNormalDistribution implements Distribution {
         double twiceLogSigmaSquared = 2 * logSigma * logSigma;
         double zeroCase = Math.log(1.0 - p);
 
-        double logProbability = data.getZeros() * zeroCase;
-
+        double logProbability = data.getZeros() * zeroCase + data.getNonZeroValues().size() * common;
         for (int i = 0; i < data.getNonZeroValues().size(); i++) {
             double d = data.getNonZeroValues().get(i);
-
-                double logD = Math.log(d);
-                logProbability += common - logD - square(logD - logMu) / twiceLogSigmaSquared;
+            double logD = Math.log(d);
+            logProbability -= logD + square(logD - logMu) / twiceLogSigmaSquared;
         }
         return logProbability;
     }
