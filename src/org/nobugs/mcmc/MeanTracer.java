@@ -1,35 +1,35 @@
 package org.nobugs.mcmc;
 
-import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-
 public class MeanTracer implements Tracer {
-    private SummaryStatistics[] stats;
+    private double[] sums;
+    private int count;
 
     public MeanTracer() {
     }
 
     private void initialize(int n) {
-        this.stats = new SummaryStatistics[n];
+        this.sums = new double[n];
         for (int i = 0; i < n; i++) {
-            stats[i] = new SummaryStatistics();
+            sums[i] = 0;
         }
     }
 
     @Override
     public void update(double[] parameters, double probability) {
-        if (stats == null) {
+        if (sums == null) {
             initialize(parameters.length);
         }
 
         for (int i = 0; i < parameters.length; i++) {
-            stats[i].addValue(parameters[i]);
+            sums[i] += parameters[i];
         }
+        count++;
     }
 
     public double[] means() {
-        double[] result = new double[stats.length];
-        for (int i = 0; i < stats.length; i++) {
-            result[i] = stats[i].getMean();
+        double[] result = new double[sums.length];
+        for (int i = 0; i < sums.length; i++) {
+            result[i] = sums[i] / count;
         }
         return result;
     }
