@@ -7,21 +7,23 @@ public class ZeroInflatedLogNormalDistribution implements Distribution {
         double logMu = parameters[1];
         double logSigma = parameters[2];
 
-        double probability = 1;
+        double common = Math.log(p)
+                + Math.log(1)
+                - Math.log(logSigma)
+                - Math.log(Math.sqrt(2 * Math.PI));
+        double twiceLogSigmaSquared = 2 * logSigma * logSigma;
+        double zeroCase = Math.log(1.0 - p);
 
+        double logProbability = 0;
         for (double d : data) {
-            double thisP;
             if (d == 0) {
-                thisP = (1.0 - p);
+                logProbability += zeroCase;
             } else {
-                double a = 1 / (d * logSigma * Math.sqrt(2 * Math.PI));
-                double b = Math.exp(-(Math.pow(Math.log(d) - logMu, 2.0) / (2 * logSigma * logSigma)));
-                thisP = p * a * b;
+                double logD = Math.log(d);
+                logProbability += common - logD - square(logD - logMu) / twiceLogSigmaSquared;
             }
-            probability *= thisP;
         }
-        return Math.log(probability);
-
+        return logProbability;
     }
 
     private double square(double d) {
