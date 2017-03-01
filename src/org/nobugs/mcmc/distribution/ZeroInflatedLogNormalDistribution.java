@@ -1,8 +1,10 @@
 package org.nobugs.mcmc.distribution;
 
+import org.nobugs.mcmc.Datapoints;
+
 public class ZeroInflatedLogNormalDistribution implements Distribution {
     @Override
-    public double logdensity(double[] parameters, double[] data) {
+    public double logdensity(double[] parameters, Datapoints data) {
         double p = parameters[0];
         double logMu = parameters[1];
         double logSigma = parameters[2];
@@ -15,7 +17,7 @@ public class ZeroInflatedLogNormalDistribution implements Distribution {
         double zeroCase = Math.log(1.0 - p);
 
         double logProbability = 0;
-        for (double d : data) {
+        for (double d : data.get()) {
             if (d == 0) {
                 logProbability += zeroCase;
             } else {

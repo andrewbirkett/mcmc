@@ -38,9 +38,9 @@ public class NormalModelTest {
         MersenneTwister randomEngine = new MersenneTwister();
 
         int datapoints = 100;
-        double[] data = Data.generateNormal(mu, sigma, datapoints, randomEngine);
+        Datapoints data = Data.generateNormal(mu, sigma, datapoints, randomEngine);
         SummaryStatistics summaryStatistics = new SummaryStatistics();
-        for (double d : data) {
+        for (double d : data.get()) {
             summaryStatistics.addValue(d);
         }
         double sampleMean = summaryStatistics.getMean();

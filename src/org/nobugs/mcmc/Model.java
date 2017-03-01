@@ -14,14 +14,14 @@ import static org.nobugs.mcmc.Monitor.StepOutcome.REJECTED;
 
 public class Model {
     private final List<Tracer> tracers;
-    private final double[] data;
+    private final Datapoints data;
     private final Distribution distribution;
     private Normal proposal;
     private Uniform uniform;
     private Monitor monitor;
     private double[] parameters;
 
-    public Model(RandomEngine randomEngine, Monitor monitor, double[] data, double[] parameters, Distribution distribution) throws Exception {
+    public Model(RandomEngine randomEngine, Monitor monitor, Datapoints data, double[] parameters, Distribution distribution) throws Exception {
         this.proposal = new Normal(0, 0.01, randomEngine);
         this.uniform = new Uniform(0, 1, randomEngine);
         this.monitor = monitor;

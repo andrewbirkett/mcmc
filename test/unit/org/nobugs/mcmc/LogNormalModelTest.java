@@ -36,10 +36,10 @@ public class LogNormalModelTest {
     public void test() throws Exception {
         MersenneTwister randomEngine = new MersenneTwister();
 
-        int datapoints = 100;
-        double[] data = Data.generateLogNormal(logmu, logsigma, datapoints, randomEngine);
+        int n = 100;
+        Datapoints data = Data.generateLogNormal(logmu, logsigma, n, randomEngine);
         SummaryStatistics summaryStatistics = new SummaryStatistics();
-        for (double d : data) {
+        for (double d : data.get()) {
             summaryStatistics.addValue(Math.log(d));
         }
         double sampleLogMean = summaryStatistics.getMean();

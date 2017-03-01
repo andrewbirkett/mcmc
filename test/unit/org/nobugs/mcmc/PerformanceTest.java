@@ -13,8 +13,8 @@ public class PerformanceTest {
 
         MersenneTwister randomEngine = new MersenneTwister();
 
-        int datapoints = 100;
-        double[] data = Data.generateNormal(0, 1, datapoints, randomEngine);
+        int n = 100;
+        Datapoints data = Data.generateNormal(0, 1, n, randomEngine);
 
         try (Monitor monitor = new Monitor()) {
             int warmup = 100_000;
@@ -33,7 +33,7 @@ public class PerformanceTest {
             }
             stopwatch.stop();
             System.out.println("Took " + stopwatch.getTime() + "ms for " + nsteps + " steps with " +
-                    datapoints + " datapoints (av " + 1000 * stopwatch.getTime() / nsteps + "us)");
+                    n + " datapoints (av " + 1000 * stopwatch.getTime() / nsteps + "us)");
         }
     }
 }

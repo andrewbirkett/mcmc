@@ -41,9 +41,9 @@ public class ZeroInflatedLogNormalModelTest {
     public void test() throws Exception {
         MersenneTwister randomEngine = new MersenneTwister();
 
-        int datapoints = 10_000; // 5 secs for 10k data points and 10k jumps
+        int numDatapoints = 10_000; // 5 secs for 10k data points and 10k jumps
         // => for 22Mm datapoints would be 3 hours
-        double[] data = Data.generateZeroInflatedLogNormal(p, logmu, logsigma, datapoints, randomEngine);
+        Datapoints data = Data.generateZeroInflatedLogNormal(p, logmu, logsigma, numDatapoints, randomEngine);
 
         try (Monitor monitor = new Monitor()) {
             int burnin = 10_000;

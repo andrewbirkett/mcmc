@@ -1,16 +1,18 @@
 package org.nobugs.mcmc.distribution;
 
+import org.nobugs.mcmc.Datapoints;
+
 public class LogNormalDistribution implements Distribution {
     @Override
-    public double logdensity(double[] parameters, double[] data) {
+    public double logdensity(double[] parameters, Datapoints data) {
         double logMu = parameters[0];
         double logSigma = parameters[1];
 
         double logProbability = 0;
 
-        logProbability += data.length * -Math.log(logSigma * Math.sqrt(2 * Math.PI));
+        logProbability += data.size() * -Math.log(logSigma * Math.sqrt(2 * Math.PI));
         double denom = 2 * square(logSigma);
-        for (double d : data) {
+        for (double d : data.get()) {
             logProbability -= Math.log(d) + square(Math.log(d) - logMu) / denom;
         }
         return logProbability;
