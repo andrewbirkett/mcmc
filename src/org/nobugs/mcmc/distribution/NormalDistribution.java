@@ -11,7 +11,7 @@ public class NormalDistribution implements Distribution {
         double sqrt_inv = 1.0 / Math.sqrt(2.0 * Math.PI * variance);
 
         double sum = 0;
-        for (double d : data.get()) {
+        for (double d : data.getAll()) {
             double delta = d - mu;
             sum += -(delta * delta) / (2.0 * variance);
         }

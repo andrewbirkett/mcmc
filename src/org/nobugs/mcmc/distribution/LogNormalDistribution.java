@@ -12,7 +12,7 @@ public class LogNormalDistribution implements Distribution {
 
         logProbability += data.size() * -Math.log(logSigma * Math.sqrt(2 * Math.PI));
         double denom = 2 * square(logSigma);
-        for (double d : data.get()) {
+        for (double d : data.getAll()) {
             logProbability -= Math.log(d) + square(Math.log(d) - logMu) / denom;
         }
         return logProbability;

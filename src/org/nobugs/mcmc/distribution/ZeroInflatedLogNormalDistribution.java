@@ -17,7 +17,7 @@ public class ZeroInflatedLogNormalDistribution implements Distribution {
         double zeroCase = Math.log(1.0 - p);
 
         double logProbability = 0;
-        for (double d : data.get()) {
+        for (double d : data.getAll()) {
             if (d == 0) {
                 logProbability += zeroCase;
             } else {

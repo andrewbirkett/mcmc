@@ -8,7 +8,7 @@ public class Datapoints {
         this.xs = xs;
     }
 
-    public double[] get() {
+    public double[] getAll() {
         return xs;
     }
 

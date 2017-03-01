@@ -39,7 +39,7 @@ public class LogNormalModelTest {
         int n = 100;
         Datapoints data = Data.generateLogNormal(logmu, logsigma, n, randomEngine);
         SummaryStatistics summaryStatistics = new SummaryStatistics();
-        for (double d : data.get()) {
+        for (double d : data.getAll()) {
             summaryStatistics.addValue(Math.log(d));
         }
         double sampleLogMean = summaryStatistics.getMean();

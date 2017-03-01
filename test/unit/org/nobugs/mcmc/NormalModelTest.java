@@ -40,7 +40,7 @@ public class NormalModelTest {
         int datapoints = 100;
         Datapoints data = Data.generateNormal(mu, sigma, datapoints, randomEngine);
         SummaryStatistics summaryStatistics = new SummaryStatistics();
-        for (double d : data.get()) {
+        for (double d : data.getAll()) {
             summaryStatistics.addValue(d);
         }
         double sampleMean = summaryStatistics.getMean();
