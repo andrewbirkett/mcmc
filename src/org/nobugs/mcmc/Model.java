@@ -6,16 +6,14 @@ import cern.jet.random.engine.RandomEngine;
 import org.nobugs.mcmc.distribution.Distribution;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.nobugs.mcmc.Monitor.StepOutcome.ACCEPTED;
 import static org.nobugs.mcmc.Monitor.StepOutcome.REJECTED;
 
 public class Model {
-    private final List<Tracer> tracers;
     private final Datapoints data;
     private final Distribution distribution;
+    private Tracer tracer;
     private Normal proposal;
     private Uniform uniform;
     private Monitor monitor;
@@ -26,13 +24,13 @@ public class Model {
         this.uniform = new Uniform(0, 1, randomEngine);
         this.monitor = monitor;
         this.data = data;
-        this.tracers = new ArrayList<>();
+        this.tracer = null;
         this.parameters = parameters;
         this.distribution = distribution;
     }
 
     public void addTracer(Tracer tracer) {
-        tracers.add(tracer);
+        this.tracer = tracer;
     }
 
     public void update() throws IOException {
@@ -51,7 +49,7 @@ public class Model {
         double currentDensity = distribution.logdensity(parameters, data);
         double proposedDensity = distribution.logdensity(proposed, data);
 
-        for (Tracer tracer : tracers) {
+        if (tracer != null) {
             tracer.update(parameters, currentDensity);
         }
 
