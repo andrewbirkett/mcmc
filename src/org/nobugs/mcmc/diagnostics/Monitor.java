@@ -1,4 +1,4 @@
-package org.nobugs.mcmc;
+package org.nobugs.mcmc.diagnostics;
 
 import java.io.Closeable;
 import java.io.IOException;

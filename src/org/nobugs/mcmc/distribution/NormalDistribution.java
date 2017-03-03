@@ -1,10 +1,10 @@
 package org.nobugs.mcmc.distribution;
 
-import org.nobugs.mcmc.Datapoints;
+import org.nobugs.mcmc.Data;
 
 public class NormalDistribution implements Distribution {
     @Override
-    public double logdensity(double[] parameters, Datapoints data) {
+    public double logdensity(double[] parameters, Data data) {
         double mu = parameters[0];
         double sigma = parameters[1];
         double variance = sigma * sigma;

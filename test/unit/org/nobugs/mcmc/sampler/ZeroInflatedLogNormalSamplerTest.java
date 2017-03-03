@@ -1,11 +1,15 @@
-package org.nobugs.mcmc;
+package org.nobugs.mcmc.sampler;
 
 import cern.jet.random.engine.MersenneTwister;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.nobugs.mcmc.Data;
+import org.nobugs.mcmc.diagnostics.MeanTracer;
+import org.nobugs.mcmc.diagnostics.Monitor;
 import org.nobugs.mcmc.distribution.Distribution;
 import org.nobugs.mcmc.distribution.ZeroInflatedLogNormalDistribution;
+import org.nobugs.mcmc.utils.Generator;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -14,13 +18,13 @@ import static org.hamcrest.number.IsCloseTo.closeTo;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class ZeroInflatedLogNormalModelTest {
+public class ZeroInflatedLogNormalSamplerTest {
 
     private final double p;
     private final double logmu;
     private final double logsigma;
 
-    public ZeroInflatedLogNormalModelTest(double p, double logmu, double logsigma) {
+    public ZeroInflatedLogNormalSamplerTest(double p, double logmu, double logsigma) {
         this.p = p;
         this.logmu = logmu;
         this.logsigma = logsigma;
@@ -43,7 +47,7 @@ public class ZeroInflatedLogNormalModelTest {
 
         int numDatapoints = 10_000; // 5 secs for 10k data points and 10k jumps
         // => for 22Mm datapoints would be 3 hours
-        Datapoints data = Data.generateZeroInflatedLogNormal(p, logmu, logsigma, numDatapoints, randomEngine);
+        Data data = Generator.zeroInflatedLogNormal(p, logmu, logsigma, numDatapoints, randomEngine);
 
         try (Monitor monitor = new Monitor()) {
             int burnin = 10_000;
@@ -51,15 +55,15 @@ public class ZeroInflatedLogNormalModelTest {
 
             double[] inits = {0.5, 0, 1};
             Distribution likelihood = new ZeroInflatedLogNormalDistribution();
-            Model model = new Model(randomEngine, monitor, data, inits, likelihood);
+            Sampler sampler = new MetropolisHastings(randomEngine, monitor, data, inits, likelihood);
             for (int i = 0; i < burnin; i++) {
-                model.update();
+                sampler.update();
             }
 
             MeanTracer tracer = new MeanTracer();
-            model.addTracer(tracer);
+            sampler.addTracer(tracer);
             for (int i = 0; i < nsteps; i++) {
-                model.update();
+                sampler.update();
             }
 
             double[] means = tracer.means();

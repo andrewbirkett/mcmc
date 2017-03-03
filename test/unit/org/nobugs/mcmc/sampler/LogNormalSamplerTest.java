@@ -1,12 +1,16 @@
-package org.nobugs.mcmc;
+package org.nobugs.mcmc.sampler;
 
 import cern.jet.random.engine.MersenneTwister;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.nobugs.mcmc.Data;
+import org.nobugs.mcmc.diagnostics.MeanTracer;
+import org.nobugs.mcmc.diagnostics.Monitor;
 import org.nobugs.mcmc.distribution.Distribution;
 import org.nobugs.mcmc.distribution.LogNormalDistribution;
+import org.nobugs.mcmc.utils.Generator;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -15,12 +19,12 @@ import static org.hamcrest.number.IsCloseTo.closeTo;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class LogNormalModelTest {
+public class LogNormalSamplerTest {
 
     private final double logmu;
     private final double logsigma;
 
-    public LogNormalModelTest(double logmu, double logsigma) {
+    public LogNormalSamplerTest(double logmu, double logsigma) {
         this.logmu = logmu;
         this.logsigma = logsigma;
     }
@@ -37,7 +41,7 @@ public class LogNormalModelTest {
         MersenneTwister randomEngine = new MersenneTwister();
 
         int n = 100;
-        Datapoints data = Data.generateLogNormal(logmu, logsigma, n, randomEngine);
+        Data data = Generator.logNormal(logmu, logsigma, n, randomEngine);
         SummaryStatistics summaryStatistics = new SummaryStatistics();
         for (double d : data.getAll()) {
             summaryStatistics.addValue(Math.log(d));
@@ -50,15 +54,15 @@ public class LogNormalModelTest {
 
             double[] inits = {3, 5};
             Distribution likelihood = new LogNormalDistribution();
-            Model model = new Model(randomEngine, monitor, data, inits, likelihood);
+            Sampler sampler = new MetropolisHastings(randomEngine, monitor, data, inits, likelihood);
             for (int i = 0; i < burnin; i++) {
-                model.update();
+                sampler.update();
             }
 
             MeanTracer tracer = new MeanTracer();
-            model.addTracer(tracer);
+            sampler.addTracer(tracer);
             for (int i = 0; i < nsteps; i++) {
-                model.update();
+                sampler.update();
             }
 
             double[] means = tracer.means();

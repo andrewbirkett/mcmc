@@ -1,17 +1,20 @@
-package org.nobugs.mcmc;
+package org.nobugs.mcmc.sampler;
 
 import cern.jet.random.Normal;
 import cern.jet.random.Uniform;
 import cern.jet.random.engine.RandomEngine;
+import org.nobugs.mcmc.Data;
+import org.nobugs.mcmc.diagnostics.Monitor;
+import org.nobugs.mcmc.diagnostics.Tracer;
 import org.nobugs.mcmc.distribution.Distribution;
 
 import java.io.IOException;
 
-import static org.nobugs.mcmc.Monitor.StepOutcome.ACCEPTED;
-import static org.nobugs.mcmc.Monitor.StepOutcome.REJECTED;
+import static org.nobugs.mcmc.diagnostics.Monitor.StepOutcome.ACCEPTED;
+import static org.nobugs.mcmc.diagnostics.Monitor.StepOutcome.REJECTED;
 
-public class Model {
-    private final Datapoints data;
+public class MetropolisHastings implements Sampler {
+    private final Data data;
     private final Distribution distribution;
     private Tracer tracer;
     private Normal proposal;
@@ -19,7 +22,7 @@ public class Model {
     private Monitor monitor;
     private double[] parameters;
 
-    public Model(RandomEngine randomEngine, Monitor monitor, Datapoints data, double[] parameters, Distribution distribution) throws Exception {
+    public MetropolisHastings(RandomEngine randomEngine, Monitor monitor, Data data, double[] parameters, Distribution distribution) throws Exception {
         this.proposal = new Normal(0, 0.01, randomEngine);
         this.uniform = new Uniform(0, 1, randomEngine);
         this.monitor = monitor;
@@ -29,10 +32,12 @@ public class Model {
         this.distribution = distribution;
     }
 
+    @Override
     public void addTracer(Tracer tracer) {
         this.tracer = tracer;
     }
 
+    @Override
     public void update() throws IOException {
         double[] delta = new double[parameters.length];
         for (int i = 0; i < parameters.length; i++) {

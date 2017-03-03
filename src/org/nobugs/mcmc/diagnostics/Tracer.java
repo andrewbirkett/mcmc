@@ -1,4 +1,4 @@
-package org.nobugs.mcmc;
+package org.nobugs.mcmc.diagnostics;
 
 public interface Tracer {
     void update(double[] params, double logProbabilityDensity);

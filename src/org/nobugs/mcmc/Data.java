@@ -1,39 +1,36 @@
 package org.nobugs.mcmc;
 
-import cern.jet.random.Normal;
-import cern.jet.random.Uniform;
-import cern.jet.random.engine.RandomEngine;
+import cern.colt.list.DoubleArrayList;
 
 public class Data {
+    private DoubleArrayList data;
+    private int zeros;
 
-    public static Datapoints generateNormal(double mean, double sd, int n, RandomEngine randomEngine) {
-        Normal normal = new Normal(mean, sd, randomEngine);
-
-        double[] data = new double[n];
-        for (int i = 0; i < n; i++) {
-            data[i] = normal.nextDouble();
+    public Data(double... xs) {
+        this.data = new DoubleArrayList();
+        for (double x : xs) {
+            if (x == 0) {
+                zeros++;
+            } else {
+                data.add(x);
+            }
         }
-        return new Datapoints(data);
     }
 
-    public static Datapoints generateLogNormal(double logMean, double logSd, int n, RandomEngine randomEngine) {
-        Normal normal = new Normal(logMean, logSd, randomEngine);
-
-        double[] data = new double[n];
-        for (int i = 0; i < n; i++) {
-            data[i] = Math.exp(normal.nextDouble());
-        }
-        return new Datapoints(data);
+    public double[] getAll() {
+        if (zeros > 0) throw new IllegalStateException("TODO: pad with zeros");
+        return data.elements();
     }
 
-    public static Datapoints generateZeroInflatedLogNormal(double p, double logMean, double logSd, int n, RandomEngine randomEngine) {
-        Normal normal = new Normal(logMean, logSd, randomEngine);
-        Uniform uniform = new Uniform(0, 1, randomEngine);
-        double[] data = new double[n];
-        for (int i = 0; i < n; i++) {
-            data[i] = uniform.nextDouble() < p ? Math.exp(normal.nextDouble()) : 0.0;
-        }
-        return new Datapoints(data);
+    public int getZeros() {
+        return zeros;
     }
 
+    public DoubleArrayList getNonZeroValues() {
+        return data;
+    }
+
+    public int size() {
+        return data.size() + zeros;
+    }
 }

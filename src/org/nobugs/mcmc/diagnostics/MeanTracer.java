@@ -1,4 +1,4 @@
-package org.nobugs.mcmc;
+package org.nobugs.mcmc.diagnostics;
 
 public class MeanTracer implements Tracer {
     private double[] sums;
