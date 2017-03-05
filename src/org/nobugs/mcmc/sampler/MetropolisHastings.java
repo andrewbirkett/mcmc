@@ -49,8 +49,6 @@ public class MetropolisHastings implements Sampler {
             proposed[i] = parameters[i] + delta[i];
         }
 
-        if (proposed[1] < 0) return;
-
         double currentDensity = distribution.logdensity(parameters, data);
         double proposedDensity = distribution.logdensity(proposed, data);
 

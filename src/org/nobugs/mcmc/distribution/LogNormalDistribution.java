@@ -1,5 +1,6 @@
 package org.nobugs.mcmc.distribution;
 
+import com.google.common.base.Preconditions;
 import org.nobugs.mcmc.Data;
 
 public class LogNormalDistribution implements Distribution {
@@ -8,6 +9,7 @@ public class LogNormalDistribution implements Distribution {
         double logMu = parameters[0];
         double logSigma = parameters[1];
 
+        Preconditions.checkArgument(logSigma >= 0.0);
         double logProbability = 0;
 
         logProbability += data.size() * -Math.log(logSigma * Math.sqrt(2 * Math.PI));
