@@ -1,5 +1,6 @@
 package org.nobugs.mcmc.sampler;
 
+import cern.jet.random.Normal;
 import cern.jet.random.engine.MersenneTwister;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,7 +31,8 @@ public class BernoulliSamplerTest {
 
             double[] inits = {0.5};
             Distribution likelihood = new BernoulliDistribution();
-            Sampler sampler = new MetropolisHastings(randomEngine, monitor, data, inits, likelihood);
+            Normal proposal = new Normal(0, 1, randomEngine);
+            Sampler sampler = new MetropolisHastings(randomEngine, monitor, data, inits, likelihood, proposal);
             for (int i = 0; i < burnin; i++) {
                 sampler.update();
             }
