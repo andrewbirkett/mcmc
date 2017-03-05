@@ -22,8 +22,8 @@ public class MetropolisHastings implements Sampler {
     private Monitor monitor;
     private double[] parameters;
 
-    public MetropolisHastings(RandomEngine randomEngine, Monitor monitor, Data data, double[] parameters, Distribution distribution) throws Exception {
-        this.proposal = new Normal(0, 0.01, randomEngine);
+    public MetropolisHastings(RandomEngine randomEngine, Monitor monitor, Data data, double[] parameters, Distribution distribution, Normal proposal) throws Exception {
+        this.proposal = proposal;
         this.uniform = new Uniform(0, 1, randomEngine);
         this.monitor = monitor;
         this.data = data;

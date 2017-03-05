@@ -1,5 +1,6 @@
 package org.nobugs.mcmc.sampler;
 
+import cern.jet.random.Normal;
 import cern.jet.random.engine.MersenneTwister;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,7 +56,8 @@ public class ZeroInflatedLogNormalSamplerTest {
 
             double[] inits = {0.5, 0, 1};
             Distribution likelihood = new ZeroInflatedLogNormalDistribution();
-            Sampler sampler = new MetropolisHastings(randomEngine, monitor, data, inits, likelihood);
+            Normal proposal = new Normal(0, 0.01, randomEngine);
+            Sampler sampler = new MetropolisHastings(randomEngine, monitor, data, inits, likelihood, proposal);
             for (int i = 0; i < burnin; i++) {
                 sampler.update();
             }

@@ -1,5 +1,6 @@
 package org.nobugs.mcmc.sampler;
 
+import cern.jet.random.Normal;
 import cern.jet.random.engine.MersenneTwister;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.junit.Test;
@@ -55,7 +56,8 @@ public class NormalSamplerTest {
 
             double[] inits = {5, 3};
             Distribution likelihood = new NormalDistribution();
-            Sampler sampler = new MetropolisHastings(randomEngine, monitor, data, inits, likelihood);
+            Normal proposal = new Normal(0, 0.01, randomEngine);
+            Sampler sampler = new MetropolisHastings(randomEngine, monitor, data, inits, likelihood, proposal);
             for (int i = 0; i < burnin; i++) {
                 sampler.update();
             }
