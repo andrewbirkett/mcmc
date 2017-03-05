@@ -1,11 +1,24 @@
 package org.nobugs.mcmc.utils;
 
+import cern.jet.random.Binomial;
 import cern.jet.random.Normal;
 import cern.jet.random.Uniform;
 import cern.jet.random.engine.RandomEngine;
 import org.nobugs.mcmc.Data;
 
 public class Generator {
+
+    public static Data bernoulli(double theta, int n, RandomEngine randomEngine) {
+        Binomial binomial = new Binomial(n, theta, randomEngine);
+
+        int ones = binomial.nextInt();
+        double[] data = new double[n];
+        for (int i = 0; i < n; i++) {
+            data[i] = (i < ones) ? 1.0 : 0.0;
+        }
+        return new Data(data);
+    }
+
 
     public static Data normal(double mean, double sd, int n, RandomEngine randomEngine) {
         Normal normal = new Normal(mean, sd, randomEngine);
