@@ -1,5 +1,6 @@
 package org.nobugs.mcmc.sampler;
 
+import cern.jet.random.Normal;
 import cern.jet.random.engine.MersenneTwister;
 import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Test;
@@ -24,7 +25,8 @@ public class PerformanceTest {
             int nsteps = 1_000_000;
 
             Distribution likelihood = new NormalDistribution();
-            MetropolisHastings sampler = new MetropolisHastings(randomEngine, monitor, data, new double[]{1, 1.5}, likelihood);
+            Normal proposal = new Normal(0, 0.01, randomEngine);
+            MetropolisHastings sampler = new MetropolisHastings(randomEngine, monitor, data, new double[]{1, 1.5}, likelihood, proposal);
             for (int i = 0; i < warmup; i++) {
                 sampler.update();
             }
