@@ -3,13 +3,11 @@ package org.nobugs.mcmc.sampler;
 import cern.jet.random.Normal;
 import cern.jet.random.engine.MersenneTwister;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.nobugs.mcmc.Data;
 import org.nobugs.mcmc.diagnostics.MeanTracer;
 import org.nobugs.mcmc.diagnostics.Monitor;
-import org.nobugs.mcmc.distribution.BernoulliDistribution;
-import org.nobugs.mcmc.distribution.Distribution;
+import org.nobugs.mcmc.likelihood.BernoulliLikelihood;
+import org.nobugs.mcmc.likelihood.Likelihood;
 import org.nobugs.mcmc.utils.Generator;
 
 import static org.hamcrest.number.IsCloseTo.closeTo;
@@ -30,7 +28,7 @@ public class BernoulliSamplerTest {
             int nsteps = 100_000;
 
             double[] inits = {0.5};
-            Distribution likelihood = new BernoulliDistribution();
+            Likelihood likelihood = new BernoulliLikelihood();
             Normal proposal = new Normal(0, 1, randomEngine);
             Sampler sampler = new MetropolisHastings(randomEngine, monitor, data, inits, likelihood, proposal);
             for (int i = 0; i < burnin; i++) {

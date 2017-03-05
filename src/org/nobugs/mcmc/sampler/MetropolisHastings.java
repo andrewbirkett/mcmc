@@ -6,7 +6,7 @@ import cern.jet.random.engine.RandomEngine;
 import org.nobugs.mcmc.Data;
 import org.nobugs.mcmc.diagnostics.Monitor;
 import org.nobugs.mcmc.diagnostics.Tracer;
-import org.nobugs.mcmc.distribution.Distribution;
+import org.nobugs.mcmc.likelihood.Likelihood;
 
 import java.io.IOException;
 
@@ -15,21 +15,21 @@ import static org.nobugs.mcmc.diagnostics.Monitor.StepOutcome.REJECTED;
 
 public class MetropolisHastings implements Sampler {
     private final Data data;
-    private final Distribution distribution;
+    private final Likelihood likelihood;
     private Tracer tracer;
     private Normal proposal;
     private Uniform uniform;
     private Monitor monitor;
     private double[] parameters;
 
-    public MetropolisHastings(RandomEngine randomEngine, Monitor monitor, Data data, double[] parameters, Distribution distribution, Normal proposal) throws Exception {
+    public MetropolisHastings(RandomEngine randomEngine, Monitor monitor, Data data, double[] parameters, Likelihood likelihood, Normal proposal) throws Exception {
         this.proposal = proposal;
         this.uniform = new Uniform(0, 1, randomEngine);
         this.monitor = monitor;
         this.data = data;
         this.tracer = null;
         this.parameters = parameters;
-        this.distribution = distribution;
+        this.likelihood = likelihood;
     }
 
     @Override
@@ -49,8 +49,8 @@ public class MetropolisHastings implements Sampler {
             proposed[i] = parameters[i] + delta[i];
         }
 
-        double currentDensity = distribution.logdensity(parameters, data);
-        double proposedDensity = distribution.logdensity(proposed, data);
+        double currentDensity = likelihood.logLikelihood(parameters, data);
+        double proposedDensity = likelihood.logLikelihood(proposed, data);
 
         if (tracer != null) {
             tracer.update(parameters, currentDensity);

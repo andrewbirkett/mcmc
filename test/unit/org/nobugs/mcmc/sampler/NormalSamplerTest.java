@@ -9,8 +9,8 @@ import org.junit.runners.Parameterized;
 import org.nobugs.mcmc.Data;
 import org.nobugs.mcmc.diagnostics.MeanTracer;
 import org.nobugs.mcmc.diagnostics.Monitor;
-import org.nobugs.mcmc.distribution.Distribution;
-import org.nobugs.mcmc.distribution.NormalDistribution;
+import org.nobugs.mcmc.likelihood.Likelihood;
+import org.nobugs.mcmc.likelihood.NormalLikelihood;
 import org.nobugs.mcmc.utils.Generator;
 
 import java.util.Arrays;
@@ -55,7 +55,7 @@ public class NormalSamplerTest {
             int nsteps = 100_000;
 
             double[] inits = {5, 3};
-            Distribution likelihood = new NormalDistribution();
+            Likelihood likelihood = new NormalLikelihood();
             Normal proposal = new Normal(0, 0.01, randomEngine);
             Sampler sampler = new MetropolisHastings(randomEngine, monitor, data, inits, likelihood, proposal);
             for (int i = 0; i < burnin; i++) {

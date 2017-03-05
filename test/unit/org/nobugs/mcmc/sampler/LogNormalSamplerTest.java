@@ -9,8 +9,8 @@ import org.junit.runners.Parameterized;
 import org.nobugs.mcmc.Data;
 import org.nobugs.mcmc.diagnostics.MeanTracer;
 import org.nobugs.mcmc.diagnostics.Monitor;
-import org.nobugs.mcmc.distribution.Distribution;
-import org.nobugs.mcmc.distribution.LogNormalDistribution;
+import org.nobugs.mcmc.likelihood.Likelihood;
+import org.nobugs.mcmc.likelihood.LogNormalLikelihood;
 import org.nobugs.mcmc.utils.Generator;
 
 import java.util.Arrays;
@@ -54,7 +54,7 @@ public class LogNormalSamplerTest {
             int nsteps = 100_000;
 
             double[] inits = {3, 5};
-            Distribution likelihood = new LogNormalDistribution();
+            Likelihood likelihood = new LogNormalLikelihood();
             Normal proposal = new Normal(0, 0.01, randomEngine);
             Sampler sampler = new MetropolisHastings(randomEngine, monitor, data, inits, likelihood, proposal);
             for (int i = 0; i < burnin; i++) {

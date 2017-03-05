@@ -1,10 +1,10 @@
-package org.nobugs.mcmc.distribution;
+package org.nobugs.mcmc.likelihood;
 
 import org.nobugs.mcmc.Data;
 
-public class ZeroInflatedLogNormalDistribution implements Distribution {
+public class ZeroInflatedLogNormalLikelihood implements Likelihood {
     @Override
-    public double logdensity(double[] parameters, Data data) {
+    public double logLikelihood(double[] parameters, Data data) {
         double p = parameters[0];
         double logMu = parameters[1];
         double logSigma = parameters[2];

@@ -1,11 +1,11 @@
-package org.nobugs.mcmc.distribution;
+package org.nobugs.mcmc.likelihood;
 
 import com.google.common.base.Preconditions;
 import org.nobugs.mcmc.Data;
 
-public class BernoulliDistribution implements Distribution {
+public class BernoulliLikelihood implements Likelihood {
     @Override
-    public double logdensity(double[] parameters, Data data) {
+    public double logLikelihood(double[] parameters, Data data) {
         double theta = parameters[0];
         Preconditions.checkArgument( theta >= 0.0 && theta <= 1.0 );
 

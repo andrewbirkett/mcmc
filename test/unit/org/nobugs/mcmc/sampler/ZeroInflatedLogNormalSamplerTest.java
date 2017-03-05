@@ -8,8 +8,8 @@ import org.junit.runners.Parameterized;
 import org.nobugs.mcmc.Data;
 import org.nobugs.mcmc.diagnostics.MeanTracer;
 import org.nobugs.mcmc.diagnostics.Monitor;
-import org.nobugs.mcmc.distribution.Distribution;
-import org.nobugs.mcmc.distribution.ZeroInflatedLogNormalDistribution;
+import org.nobugs.mcmc.likelihood.Likelihood;
+import org.nobugs.mcmc.likelihood.ZeroInflatedLogNormalLikelihood;
 import org.nobugs.mcmc.utils.Generator;
 
 import java.util.Arrays;
@@ -55,7 +55,7 @@ public class ZeroInflatedLogNormalSamplerTest {
             int nsteps = 10_000;
 
             double[] inits = {0.5, 0, 1};
-            Distribution likelihood = new ZeroInflatedLogNormalDistribution();
+            Likelihood likelihood = new ZeroInflatedLogNormalLikelihood();
             Normal proposal = new Normal(0, 0.01, randomEngine);
             Sampler sampler = new MetropolisHastings(randomEngine, monitor, data, inits, likelihood, proposal);
             for (int i = 0; i < burnin; i++) {

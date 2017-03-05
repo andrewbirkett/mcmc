@@ -1,12 +1,12 @@
-package org.nobugs.mcmc.distribution;
+package org.nobugs.mcmc.likelihood;
 
 import org.nobugs.mcmc.Data;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-public class NormalDistribution implements Distribution {
+public class NormalLikelihood implements Likelihood {
     @Override
-    public double logdensity(double[] parameters, Data data) {
+    public double logLikelihood(double[] parameters, Data data) {
         double mu = parameters[0];
         double sigma = parameters[1];
 

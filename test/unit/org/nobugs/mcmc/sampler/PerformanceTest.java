@@ -6,8 +6,8 @@ import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Test;
 import org.nobugs.mcmc.Data;
 import org.nobugs.mcmc.diagnostics.Monitor;
-import org.nobugs.mcmc.distribution.Distribution;
-import org.nobugs.mcmc.distribution.NormalDistribution;
+import org.nobugs.mcmc.likelihood.Likelihood;
+import org.nobugs.mcmc.likelihood.NormalLikelihood;
 import org.nobugs.mcmc.utils.Generator;
 
 public class PerformanceTest {
@@ -24,7 +24,7 @@ public class PerformanceTest {
             int warmup = 100_000;
             int nsteps = 1_000_000;
 
-            Distribution likelihood = new NormalDistribution();
+            Likelihood likelihood = new NormalLikelihood();
             Normal proposal = new Normal(0, 0.01, randomEngine);
             MetropolisHastings sampler = new MetropolisHastings(randomEngine, monitor, data, new double[]{1, 1.5}, likelihood, proposal);
             for (int i = 0; i < warmup; i++) {
