@@ -4,8 +4,7 @@ import org.nobugs.mcmc.diagnostics.Tracer;
 
 import java.io.IOException;
 
-public interface Sampler {
+interface Sampler {
     void addTracer(Tracer tracer);
-
-    void update() throws IOException;
+    void update();
 }

@@ -25,6 +25,14 @@ public class ZeroInflatedLogNormalLikelihood implements Likelihood {
         return logProbability;
     }
 
+    @Override
+    public boolean supports(double[] parameters) {
+        double p = parameters[0];
+        double logSigma = parameters[2];
+
+        return (p >= 0.0 && p <= 1.0) && (logSigma >= 0);
+    }
+
     private double square(double d) {
         return d * d;
     }

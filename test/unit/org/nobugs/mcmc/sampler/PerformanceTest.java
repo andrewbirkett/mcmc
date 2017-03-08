@@ -8,6 +8,9 @@ import org.nobugs.mcmc.Data;
 import org.nobugs.mcmc.diagnostics.Monitor;
 import org.nobugs.mcmc.likelihood.Likelihood;
 import org.nobugs.mcmc.likelihood.NormalLikelihood;
+import org.nobugs.mcmc.prior.IndependentPrior;
+import org.nobugs.mcmc.prior.JointPrior;
+import org.nobugs.mcmc.prior.simple.UniformPrior;
 import org.nobugs.mcmc.utils.Generator;
 
 public class PerformanceTest {
@@ -26,7 +29,12 @@ public class PerformanceTest {
 
             Likelihood likelihood = new NormalLikelihood();
             Normal proposal = new Normal(0, 0.01, randomEngine);
-            MetropolisHastings sampler = new MetropolisHastings(randomEngine, monitor, data, new double[]{1, 1.5}, likelihood, proposal);
+
+            JointPrior prior = new IndependentPrior(
+                    new UniformPrior(-2,12, randomEngine),
+                    new UniformPrior(0,10, randomEngine)
+            );
+            MetropolisHastings sampler = new MetropolisHastings(randomEngine, monitor, data, new double[]{1, 1.5}, likelihood, proposal, prior);
             for (int i = 0; i < warmup; i++) {
                 sampler.update();
             }

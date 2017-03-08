@@ -11,6 +11,9 @@ import org.nobugs.mcmc.diagnostics.MeanTracer;
 import org.nobugs.mcmc.diagnostics.Monitor;
 import org.nobugs.mcmc.likelihood.Likelihood;
 import org.nobugs.mcmc.likelihood.LogNormalLikelihood;
+import org.nobugs.mcmc.prior.IndependentPrior;
+import org.nobugs.mcmc.prior.JointPrior;
+import org.nobugs.mcmc.prior.simple.UniformPrior;
 import org.nobugs.mcmc.utils.Generator;
 
 import java.util.Arrays;
@@ -44,7 +47,8 @@ public class LogNormalSamplerTest {
         int n = 100;
         Data data = Generator.logNormal(logmu, logsigma, n, randomEngine);
         SummaryStatistics summaryStatistics = new SummaryStatistics();
-        for (double d : data.getAll()) {
+        for (int i = 0; i < data.getAll().size(); i++) {
+            double d = data.getAll().get(i);
             summaryStatistics.addValue(Math.log(d));
         }
         double sampleLogMean = summaryStatistics.getMean();
@@ -56,7 +60,12 @@ public class LogNormalSamplerTest {
             double[] inits = {3, 5};
             Likelihood likelihood = new LogNormalLikelihood();
             Normal proposal = new Normal(0, 0.01, randomEngine);
-            Sampler sampler = new MetropolisHastings(randomEngine, monitor, data, inits, likelihood, proposal);
+
+            JointPrior prior = new IndependentPrior(
+                    new UniformPrior(0,10, randomEngine),
+                    new UniformPrior(0,10, randomEngine)
+            );
+            Sampler sampler = new MetropolisHastings(randomEngine, monitor, data, inits, likelihood, proposal, prior);
             for (int i = 0; i < burnin; i++) {
                 sampler.update();
             }
@@ -70,7 +79,6 @@ public class LogNormalSamplerTest {
             double[] means = tracer.means();
             assertThat(means[0], closeTo(sampleLogMean, 0.1));
             assertThat(means[1], closeTo(sampleLogSd, 0.1));
-            System.out.println("MeanMu:" + means[0] + " meanSigma:" + means[1]);
         }
     }
 

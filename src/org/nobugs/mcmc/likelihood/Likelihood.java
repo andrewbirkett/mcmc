@@ -4,4 +4,5 @@ import org.nobugs.mcmc.Data;
 
 public interface Likelihood {
     double logLikelihood(double[] parameters, Data data);
+    boolean supports(double[] parameters);
 }

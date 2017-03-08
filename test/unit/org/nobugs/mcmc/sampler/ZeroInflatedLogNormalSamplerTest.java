@@ -10,6 +10,9 @@ import org.nobugs.mcmc.diagnostics.MeanTracer;
 import org.nobugs.mcmc.diagnostics.Monitor;
 import org.nobugs.mcmc.likelihood.Likelihood;
 import org.nobugs.mcmc.likelihood.ZeroInflatedLogNormalLikelihood;
+import org.nobugs.mcmc.prior.*;
+import org.nobugs.mcmc.prior.simple.BetaPrior;
+import org.nobugs.mcmc.prior.simple.UniformPrior;
 import org.nobugs.mcmc.utils.Generator;
 
 import java.util.Arrays;
@@ -46,8 +49,7 @@ public class ZeroInflatedLogNormalSamplerTest {
     public void test() throws Exception {
         MersenneTwister randomEngine = new MersenneTwister();
 
-        int numDatapoints = 10_000; // 5 secs for 10k data points and 10k jumps
-        // => for 22Mm datapoints would be 3 hours
+        int numDatapoints = 10_000;
         Data data = Generator.zeroInflatedLogNormal(p, logmu, logsigma, numDatapoints, randomEngine);
 
         try (Monitor monitor = new Monitor()) {
@@ -57,7 +59,11 @@ public class ZeroInflatedLogNormalSamplerTest {
             double[] inits = {0.5, 0, 1};
             Likelihood likelihood = new ZeroInflatedLogNormalLikelihood();
             Normal proposal = new Normal(0, 0.01, randomEngine);
-            Sampler sampler = new MetropolisHastings(randomEngine, monitor, data, inits, likelihood, proposal);
+
+            JointPrior prior = new IndependentPrior(new BetaPrior(1,1, randomEngine),
+                    new UniformPrior(0, 10, randomEngine),
+                    new UniformPrior( 0, 10, randomEngine ));
+            Sampler sampler = new MetropolisHastings(randomEngine, monitor, data, inits, likelihood, proposal, prior);
             for (int i = 0; i < burnin; i++) {
                 sampler.update();
             }
@@ -69,7 +75,6 @@ public class ZeroInflatedLogNormalSamplerTest {
             }
 
             double[] means = tracer.means();
-            System.out.println("P: " + means[0] + " MeanMu:" + means[1] + " meanSigma:" + means[2]);
             assertThat(means[0], closeTo(p, 0.1));
             assertThat(means[1], closeTo(logmu, 0.1));
             assertThat(means[2], closeTo(logsigma, 0.1));

@@ -7,23 +7,23 @@ public class MeanTracer implements Tracer {
     public MeanTracer() {
     }
 
-    private void initialize(int n) {
-        this.sums = new double[n];
-        for (int i = 0; i < n; i++) {
-            sums[i] = 0;
-        }
-    }
-
     @Override
-    public void update(double[] parameters, double probability) {
+    public void update(double[] parameters) {
         if (sums == null) {
-            initialize(parameters.length);
+            lazyInitialize(parameters.length);
         }
 
         for (int i = 0; i < parameters.length; i++) {
             sums[i] += parameters[i];
         }
         count++;
+    }
+
+    private void lazyInitialize(int n) {
+        this.sums = new double[n];
+        for (int i = 0; i < n; i++) {
+            sums[i] = 0;
+        }
     }
 
     public double[] means() {

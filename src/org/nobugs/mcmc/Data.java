@@ -3,7 +3,7 @@ package org.nobugs.mcmc;
 import cern.colt.list.DoubleArrayList;
 
 public class Data {
-    private DoubleArrayList data;
+    private final DoubleArrayList data;
     private int zeros;
 
     public Data(double... xs) {
@@ -17,9 +17,9 @@ public class Data {
         }
     }
 
-    public double[] getAll() {
+    public DoubleArrayList getAll() {
         if (zeros > 0) throw new IllegalStateException("TODO: pad with zeros");
-        return data.elements();
+        return data;
     }
 
     public int getZeros() {

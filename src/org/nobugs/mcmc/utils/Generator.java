@@ -10,7 +10,6 @@ public class Generator {
 
     public static Data bernoulli(double theta, int n, RandomEngine randomEngine) {
         Binomial binomial = new Binomial(n, theta, randomEngine);
-
         int ones = binomial.nextInt();
         double[] data = new double[n];
         for (int i = 0; i < n; i++) {

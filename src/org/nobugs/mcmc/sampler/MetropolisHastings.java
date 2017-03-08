@@ -7,8 +7,7 @@ import org.nobugs.mcmc.Data;
 import org.nobugs.mcmc.diagnostics.Monitor;
 import org.nobugs.mcmc.diagnostics.Tracer;
 import org.nobugs.mcmc.likelihood.Likelihood;
-
-import java.io.IOException;
+import org.nobugs.mcmc.prior.JointPrior;
 
 import static org.nobugs.mcmc.diagnostics.Monitor.StepOutcome.ACCEPTED;
 import static org.nobugs.mcmc.diagnostics.Monitor.StepOutcome.REJECTED;
@@ -17,12 +16,13 @@ public class MetropolisHastings implements Sampler {
     private final Data data;
     private final Likelihood likelihood;
     private Tracer tracer;
-    private Normal proposal;
-    private Uniform uniform;
-    private Monitor monitor;
+    private final Normal proposal;
+    private final JointPrior prior;
+    private final Uniform uniform;
+    private final Monitor monitor;
     private double[] parameters;
 
-    public MetropolisHastings(RandomEngine randomEngine, Monitor monitor, Data data, double[] parameters, Likelihood likelihood, Normal proposal) throws Exception {
+    public MetropolisHastings(RandomEngine randomEngine, Monitor monitor, Data data, double[] parameters, Likelihood likelihood, Normal proposal, JointPrior prior) {
         this.proposal = proposal;
         this.uniform = new Uniform(0, 1, randomEngine);
         this.monitor = monitor;
@@ -30,6 +30,7 @@ public class MetropolisHastings implements Sampler {
         this.tracer = null;
         this.parameters = parameters;
         this.likelihood = likelihood;
+        this.prior = prior;
     }
 
     @Override
@@ -38,7 +39,12 @@ public class MetropolisHastings implements Sampler {
     }
 
     @Override
-    public void update() throws IOException {
+    public void update() {
+
+        if (tracer != null) {
+            tracer.update(parameters);
+        }
+
         double[] delta = new double[parameters.length];
         for (int i = 0; i < parameters.length; i++) {
             delta[i] = proposal.nextDouble();
@@ -49,26 +55,25 @@ public class MetropolisHastings implements Sampler {
             proposed[i] = parameters[i] + delta[i];
         }
 
-        double currentDensity = likelihood.logLikelihood(parameters, data);
-        double proposedDensity = likelihood.logLikelihood(proposed, data);
-
-        if (tracer != null) {
-            tracer.update(parameters, currentDensity);
+        if (!likelihood.supports(proposed)) {
+            monitor.recordStep(REJECTED);
+            return;
         }
+
+        double currentDensity = likelihood.logLikelihood(parameters, data) + prior.logProbability(parameters);
+        double proposedDensity = likelihood.logLikelihood(proposed, data) + prior.logProbability(proposed);
 
         if (proposedDensity > currentDensity) {
             monitor.recordStep(ACCEPTED);
             parameters = proposed;
         } else {
             double ratio = Math.exp(proposedDensity - currentDensity);
-            double roll = uniform.nextDouble();
-            if (roll < ratio) {
+            if (uniform.nextDouble() < ratio) {
                 monitor.recordStep(ACCEPTED);
                 parameters = proposed;
             } else {
                 monitor.recordStep(REJECTED);
             }
-
         }
     }
 }
