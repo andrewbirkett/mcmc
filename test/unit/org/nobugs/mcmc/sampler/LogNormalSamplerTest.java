@@ -1,5 +1,6 @@
 package org.nobugs.mcmc.sampler;
 
+import cern.jet.random.AbstractDistribution;
 import cern.jet.random.Normal;
 import cern.jet.random.engine.MersenneTwister;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
@@ -59,7 +60,10 @@ public class LogNormalSamplerTest {
 
             double[] inits = {3, 5};
             Likelihood likelihood = new LogNormalLikelihood();
-            Normal proposal = new Normal(0, 0.01, randomEngine);
+            AbstractDistribution[] proposal = new AbstractDistribution[]{
+                    new Normal(0, 0.01, randomEngine),
+                    new Normal(0, 0.01, randomEngine)
+            };
 
             JointPrior prior = new IndependentPrior(
                     new UniformPrior(0,10, randomEngine),

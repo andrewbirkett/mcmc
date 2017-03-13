@@ -1,5 +1,6 @@
 package org.nobugs.mcmc.sampler;
 
+import cern.jet.random.AbstractDistribution;
 import cern.jet.random.Normal;
 import cern.jet.random.engine.MersenneTwister;
 import org.junit.Test;
@@ -58,7 +59,11 @@ public class ZeroInflatedLogNormalSamplerTest {
 
             double[] inits = {0.5, 0, 1};
             Likelihood likelihood = new ZeroInflatedLogNormalLikelihood();
-            Normal proposal = new Normal(0, 0.01, randomEngine);
+            AbstractDistribution[] proposal = new AbstractDistribution[]{
+                    new Normal(0, 0.01, randomEngine),
+                    new Normal(0, 0.01, randomEngine),
+                    new Normal(0, 0.01, randomEngine)
+            };
 
             JointPrior prior = new IndependentPrior(new BetaPrior(1,1, randomEngine),
                     new UniformPrior(0, 10, randomEngine),
@@ -80,5 +85,4 @@ public class ZeroInflatedLogNormalSamplerTest {
             assertThat(means[2], closeTo(logsigma, 0.1));
         }
     }
-
 }

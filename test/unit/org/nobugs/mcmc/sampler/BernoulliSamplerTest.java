@@ -1,5 +1,6 @@
 package org.nobugs.mcmc.sampler;
 
+import cern.jet.random.AbstractDistribution;
 import cern.jet.random.Normal;
 import cern.jet.random.engine.MersenneTwister;
 import org.junit.Test;
@@ -65,7 +66,9 @@ public class BernoulliSamplerTest {
 
             double[] inits = {0.5};
             Likelihood likelihood = new BernoulliLikelihood();
-            Normal proposal = new Normal(0, 0.05, randomEngine);
+            AbstractDistribution[] proposal = new AbstractDistribution[]{
+                    new Normal(0, 0.05, randomEngine)
+            };
 
             JointPrior prior = new IndependentPrior(new BetaPrior(priorAlpha, priorBeta, RANDOM_ENGINE));
             Sampler sampler = new MetropolisHastings(randomEngine, monitor, data, inits, likelihood, proposal, prior);

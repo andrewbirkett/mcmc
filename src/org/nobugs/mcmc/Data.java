@@ -7,13 +7,22 @@ public class Data {
     private int zeros;
 
     public Data(double... xs) {
+        this(0, xs);
+    }
+
+    public Data(int numZeros, double... rest) {
         this.data = new DoubleArrayList();
-        for (double x : xs) {
-            if (x == 0) {
-                zeros++;
-            } else {
-                data.add(x);
-            }
+        this.zeros = numZeros;
+        for (double d : rest) {
+            add(d);
+        }
+    }
+
+    private void add(double x) {
+        if (x == 0) {
+            zeros++;
+        } else {
+            data.add(x);
         }
     }
 

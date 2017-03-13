@@ -1,5 +1,6 @@
 package org.nobugs.mcmc.sampler;
 
+import cern.jet.random.AbstractDistribution;
 import cern.jet.random.Normal;
 import cern.jet.random.engine.MersenneTwister;
 import org.apache.commons.lang3.time.StopWatch;
@@ -28,7 +29,11 @@ public class PerformanceTest {
             int nsteps = 1_000_000;
 
             Likelihood likelihood = new NormalLikelihood();
-            Normal proposal = new Normal(0, 0.01, randomEngine);
+            AbstractDistribution[] proposal = new AbstractDistribution[]{
+                    new Normal(0, 0.01, randomEngine),
+                    new Normal(0, 0.01, randomEngine)
+            };
+
 
             JointPrior prior = new IndependentPrior(
                     new UniformPrior(-2,12, randomEngine),
