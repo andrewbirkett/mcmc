@@ -1,14 +1,15 @@
 package org.nobugs.mcmc.likelihood;
 
-import com.google.common.base.Preconditions;
 import org.nobugs.mcmc.Data;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 public class BernoulliLikelihood implements Likelihood {
 
     @Override
     public double logLikelihood(double[] parameters, Data data) {
         double theta = parameters[0];
-        Preconditions.checkArgument(theta >= 0.0 && theta <= 1.0);
+        checkArgument(theta >= 0.0 && theta <= 1.0);
 
         double logProbability = 0;
         if (data.getZeros() > 0) {
@@ -22,7 +23,7 @@ public class BernoulliLikelihood implements Likelihood {
 
     @Override
     public boolean supports(double[] parameters) {
-        Preconditions.checkArgument(parameters.length == 1);
+        checkArgument(parameters.length == 1);
         double theta = parameters[0];
         return theta >= 0.0 && theta <= 1.0;
     }
