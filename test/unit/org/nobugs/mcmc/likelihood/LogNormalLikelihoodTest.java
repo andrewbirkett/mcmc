@@ -8,7 +8,7 @@ import static org.junit.Assert.assertThat;
 
 public class LogNormalLikelihoodTest {
     @Test
-    public void test() throws Exception {
+    public void test() {
         assertThat(likelihood(new double[]{0, 1}, new Data(1)), closeTo(0.3989423, 1e-5));
         assertThat(likelihood(new double[]{0, 1}, new Data(2)), closeTo(0.156874, 1e-5));
         assertThat(likelihood(new double[]{1, 1}, new Data(1)), closeTo(0.2419707, 1e-5));

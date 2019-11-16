@@ -1,7 +1,6 @@
 package org.nobugs.mcmc.diagnostics;
 
 import java.io.Closeable;
-import java.io.IOException;
 
 public class Monitor implements Closeable {
     private int steps;
@@ -20,8 +19,8 @@ public class Monitor implements Closeable {
     }
 
     @Override
-    public void close() throws IOException {
-        System.out.printf("Did " + steps + " and rejected " + rejected);
+    public void close() {
+        System.out.print("Did " + steps + " and rejected " + rejected);
     }
 
     public enum StepOutcome {ACCEPTED, REJECTED}

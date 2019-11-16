@@ -5,10 +5,11 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
 public class Coda implements Tracer, Closeable {
-    private static final Charset CHARSET = Charset.forName("UTF-8");
+    private static final Charset CHARSET = StandardCharsets.UTF_8;
     private final OutputStream outputStream;
 
     public Coda(Path filename) throws IOException {

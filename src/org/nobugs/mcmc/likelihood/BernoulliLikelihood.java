@@ -1,7 +1,6 @@
 package org.nobugs.mcmc.likelihood;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Range;
 import org.nobugs.mcmc.Data;
 
 public class BernoulliLikelihood implements Likelihood {

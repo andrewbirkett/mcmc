@@ -1,7 +1,6 @@
 package org.nobugs.mcmc.sampler;
 
 import cern.jet.random.AbstractDistribution;
-import cern.jet.random.Normal;
 import cern.jet.random.Uniform;
 import cern.jet.random.engine.RandomEngine;
 import org.nobugs.mcmc.Data;
@@ -23,7 +22,7 @@ public class MetropolisHastings implements Sampler {
     private final Monitor monitor;
     private double[] parameters;
 
-    public MetropolisHastings(RandomEngine randomEngine, Monitor monitor, Data data, double[] parameters, Likelihood likelihood, AbstractDistribution[] proposal, JointPrior prior) {
+    MetropolisHastings(RandomEngine randomEngine, Monitor monitor, Data data, double[] parameters, Likelihood likelihood, AbstractDistribution[] proposal, JointPrior prior) {
         this.proposal = proposal;
         this.uniform = new Uniform(0, 1, randomEngine);
         this.monitor = monitor;
@@ -41,7 +40,6 @@ public class MetropolisHastings implements Sampler {
 
     @Override
     public void update() {
-
         if (tracer != null) {
             tracer.update(parameters);
         }

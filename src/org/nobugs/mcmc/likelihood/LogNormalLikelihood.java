@@ -1,6 +1,5 @@
 package org.nobugs.mcmc.likelihood;
 
-import com.google.common.base.Preconditions;
 import org.nobugs.mcmc.Data;
 
 public class LogNormalLikelihood implements Likelihood {
